@@ -40,6 +40,7 @@ class Level:
     def __init__(self, 
                  screen: pygame.Surface,
                  index: int) -> None:
+        print(index)
         self.screen = screen
         self.figures : list[Figure] = []
         self.current_figure = None
@@ -69,15 +70,13 @@ class Level:
                 square.rect = square.image.get_rect(center=(place[1] * BLOCK_SIZE + square.x + BLOCK_SIZE // 2,
                                                             place[0] * BLOCK_SIZE + square.y + BLOCK_SIZE // 2))
         self.bg = pygame.Surface((WIDTH, HEIGHT))
-        self.bg.fill((20, 20, 20))
+        self.bg.fill(BG_COLOR)
         self.X_OFFSET = (self.GRID_WIDTH - self.RECT_WIDTH) // 2 * BLOCK_SIZE
         self.Y_OFFSET = (self.GRID_HEIGHT - self.RECT_HEIGHT) // 2 * BLOCK_SIZE
-        pygame.draw.rect(self.bg, (40, 40, 40),
+        pygame.draw.rect(self.bg, BTN_COLOR,
                          (self.X_OFFSET, self.Y_OFFSET,
                           self.RECT_WIDTH * BLOCK_SIZE,
                           self.RECT_HEIGHT * BLOCK_SIZE))
-
-
 
     def __is_valid(self, brick: tuple[tuple[int, int]],
                    row: int, col: int) -> None:

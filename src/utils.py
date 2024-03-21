@@ -1,16 +1,26 @@
 import sys
 from os import path
+import pygame
 
 HEIGHT = 1000
 WIDTH = 1000
 BLOCK_SIZE = 60
 
+BG_COLOR = (20, 20, 20)
+BTN_COLOR = (40, 40, 40)
+BTN_COLOR_ACTIVE = (70, 70, 70)
+
 COLORS = (
     (255, 102, 102),   # Czerwony
+    (255, 102, 51),    # Ciemny pomarańczowy
+    (255, 153, 51),    # Żółto-pomarańczowy
     (255, 153, 102),   # Pomarańczowy
+    (255, 204, 51),    # Jasnożółty
     (255, 204, 102),   # Żółty
+    (204, 255, 51),    # Jasnozielony
     (204, 255, 102),   # Zielony
-    (153, 255, 102),   # Zielony turkusowy
+    (153, 255, 51),    # Zielony turkusowy
+    (102, 255, 51),    # Zielony turkusowy
     (102, 255, 102),   # Błękitny
     (102, 255, 153),   # Turkusowy
     (102, 255, 204),   # Jasnoniebieski
@@ -21,12 +31,35 @@ COLORS = (
     (204, 102, 255),   # Fioletowy
     (255, 102, 204),   # Jasny fioletowy
     (255, 102, 153),   # Różowy
-    (255, 102, 102),   # Czerwony
-    (255, 153, 102),   # Pomarańczowy
-    (255, 204, 102),   # Żółty
-    (204, 255, 102),   # Zielony
-    (153, 255, 102)    # Zielony turkusowy
 )
+
+class Button:
+
+    def __init__(self, screen: pygame.Surface,
+                 x: int, 
+                 y: int, 
+                 width: int, 
+                 height: int, 
+                 text: str) -> None:
+        self.screen = screen
+        self.rect = pygame.Rect(x, y, width, height)
+        self.text = text
+        self.font = pygame.font.Font(None, 36)
+        self._cursor_flag = False
+
+    def draw(self, cursor_pos) -> bool:
+        pygame.draw.rect(self.screen, 
+                         BTN_COLOR_ACTIVE if self._cursor_flag else BTN_COLOR, 
+                         self.rect, border_radius=10)
+        text_surface = self.font.render(self.text, True, (204, 204, 204))
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        self.screen.blit(text_surface, text_rect)
+        if self.rect.collidepoint(cursor_pos):
+            self._cursor_flag = True
+            return True
+        else:
+            self._cursor_flag = False
+            return False
 
 
 
