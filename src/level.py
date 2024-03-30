@@ -46,6 +46,11 @@ class Level:
         self.current_figure = None
         self.current_shadow = None
         self.current_coords = [0, 0]
+        self._is_done = False
+        self._last_button = None
+        self.index = index
+        self.home_btn = Button(self.screen, 40, 40, 40, 40, "<-")
+        self.next_btn = Button(self.screen, WIDTH - 80, 40, 40, 40, "->")
         with open(res_path(f"assets/levels/level{index}.txt"), "r") as f:
             counter = 1
             for line in f.readlines():
@@ -61,7 +66,7 @@ class Level:
         self.GRID_WIDTH = WIDTH // BLOCK_SIZE
         self.matrix = [[0 for x in range(self.GRID_HEIGHT)] for y in range(self.GRID_WIDTH)]
         for figure in self.figures:
-            places = [(i, j) for i in range(self.GRID_HEIGHT) 
+            places = [(i, j) for i in range(3, self.GRID_HEIGHT) 
                       for j in range(self.GRID_WIDTH) 
                       if self.__is_valid(figure.offsets, i, j)]
             place = random.choice(places)
@@ -103,10 +108,15 @@ class Level:
             self.matrix[row + block[0]][col + block[1]] = 0
         print(counter)
 
-    def draw(self) -> None:
+    def draw(self, pos) -> None:
         self.screen.blit(self.bg, (0, 0))
         if self.current_shadow is not None:
             self.current_shadow.draw(self.screen)
+        self._last_button = None
+        if self.home_btn.draw(pos):
+            self._last_button = -1
+        if self._is_done and self.next_btn.draw(pos):
+            self._last_button = -2
         for figure in self.figures:
             figure.draw(self.screen)
         
@@ -150,7 +160,11 @@ class Level:
                     square.rect = square.image.get_rect(center=(self.current_coords[0] * BLOCK_SIZE + square.x + BLOCK_SIZE // 2,
                                                                 self.current_coords[1] * BLOCK_SIZE + square.y + BLOCK_SIZE // 2))
 
-    def release(self, x: int, y: int) -> None:
+    def release(self, x: int, y: int) -> int:
+        if self._last_button == -2:
+            return 2
+        elif self._last_button == -1:
+            return 1
         if self.current_figure is not None:
             for square in self.current_figure:
                 square.rect = square.image.get_rect(center=(self.current_coords[0] * BLOCK_SIZE + square.x + BLOCK_SIZE // 2,
@@ -165,6 +179,7 @@ class Level:
                 if 0 in self.matrix[i][self.X_OFFSET // BLOCK_SIZE : self.X_OFFSET // BLOCK_SIZE + self.RECT_WIDTH]:
                     break
             else:
-                print("lolol")
+                self._is_done = True
+        return 0
             
     
