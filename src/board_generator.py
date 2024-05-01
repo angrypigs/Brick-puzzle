@@ -65,7 +65,7 @@ class boardGenerator:
         if self.are_empty_spaces_after(brick, row, col):
             return -1
         return weight
-            
+
     def generate(self) -> tuple[tuple[tuple[tuple[int, int]]], int]:
         self.matrix = [[0 for x in range(self.WIDTH)] for y in range(self.HEIGHT)]
         placed_blocks = []
@@ -81,12 +81,17 @@ class boardGenerator:
                     if self.matrix[i][j] == 0:
                         for block in all_blocks:
                             weight = self.get_weight(block[1], i, j)
-                            if weight == max_weight:
-                                best_placements.append((block, i, j))
-                            elif weight > max_weight:
-                                max_weight = weight
-                                best_placements.clear()
-                                best_placements.append((block, i, j))
+                            if fill_counter < 3:
+                                if weight >= 0:
+                                    best_placements.append((block, i, j))
+                                    max_weight = weight
+                            else:
+                                if weight == max_weight:
+                                    best_placements.append((block, i, j))
+                                elif weight > max_weight:
+                                    max_weight = weight
+                                    best_placements.clear()
+                                    best_placements.append((block, i, j))
             if max_weight == -1:
                 if self.is_board_full():
                     print(f"Attempts: {tries}")
