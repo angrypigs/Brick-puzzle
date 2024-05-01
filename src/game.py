@@ -15,6 +15,7 @@ class Game:
     def __init__(self) -> None:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption("Brick Puzzle")
         self.clock = pygame.time.Clock()
         self.lvl = Level(self.screen, 1)
         self.menu = mainMenu(self.screen)
@@ -38,7 +39,7 @@ class Game:
                             elif pressed_button == 2:
                                 self.game_mode = 3
                                 self.generate_status = False
-                                Thread(target=self.generate_level).start()
+                                Thread(target=self.generate_level, daemon=True).start()
                                 self.menu = loadingScreen(self.screen)
                         elif event.type == pygame.MOUSEMOTION:
                             self.pos = event.pos
@@ -62,6 +63,7 @@ class Game:
                                     if self.lvl.index is None:
                                         self.game_mode = 0
                                         self.menu = mainMenu(self.screen)
+                                        self.generate_status = False
                                     else:
                                         self.game_mode = 1
                                         self.menu = levelChoose(self.screen)
@@ -74,20 +76,19 @@ class Game:
                                     else:
                                         self.game_mode = 3
                                         self.generate_status = False
-                                        Thread(target=self.generate_level).start()
+                                        Thread(target=self.generate_level, daemon=True).start()
                                         self.menu = loadingScreen(self.screen)
                         elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
                             self.lvl.move(event.pos[0], event.pos[1])
                         elif event.type == pygame.MOUSEMOTION:
-                            self.pos = event.pos
-                    case 3:
-                        if self.generate_status:
-                            self.game_mode = 2
-                            self.lvl = Level(self.screen, None, 
-                                             self.generate_bricks, 
-                                             self.generate_size)
+                            self.pos = event.pos        
             if self.game_mode in (0, 1, 3):
                 self.menu.draw(self.pos)
+                if self.generate_status:
+                    self.game_mode = 2
+                    self.lvl = Level(self.screen, None, 
+                                        self.generate_bricks, 
+                                        self.generate_size)
             else:
                 self.lvl.draw(self.pos)
             pygame.display.flip()

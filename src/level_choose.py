@@ -54,7 +54,6 @@ class levelChoose:
             self.current_btn = -2
         if self.home_btn.draw(pos):
             self.current_btn = -3
-        print(self.current_btn)
     
     def click(self) -> bool:
         if self.current_btn is not None and self.current_btn > -1:

@@ -52,24 +52,22 @@ class Level:
         self.index = index
         self.home_btn = Button(self.screen, 40, 40, 80, 80, "", IMG_HOME)
         self.next_btn = Button(self.screen, WIDTH - 120, 40, 80, 80, "", IMG_ARROW_RIGHT)
+        blocks_temp = []
         if index is None:
             self.RECT_WIDTH = size[0]
             self.RECT_HEIGHT = size[1]
-            for i, block in enumerate(blocks):
-                self.figures.append(Figure(i + 1, block, COLORS[i]))
+            blocks_temp = blocks
         else:
             with open(res_path(f"assets/levels/level{index}.txt"), "r") as f:
-                counter = 1
                 for line in f.readlines():
                     if line[0] == "S":
                         size1 = line.rstrip().split()
                         self.RECT_WIDTH = int(size1[1])
                         self.RECT_HEIGHT = int(size1[2])
                     else:
-                        block = tuple([tuple([int(y) for y in x.split(":")]) for x in line.rstrip().split(";")])
-                        print(block)
-                        self.figures.append(Figure(counter, block, COLORS[counter - 1]))
-                        counter += 1
+                        blocks_temp.append(tuple([tuple([int(y) for y in x.split(":")]) for x in line.rstrip().split(";")]))
+        for i, color in enumerate(random.sample(COLORS, len(blocks_temp))):
+            self.figures.append(Figure(i + 1, blocks_temp[i], color))
         self.GRID_HEIGHT = HEIGHT // BLOCK_SIZE
         self.GRID_WIDTH = WIDTH // BLOCK_SIZE
         self.matrix = [[0 for x in range(self.GRID_HEIGHT)] for y in range(self.GRID_WIDTH)]
@@ -188,7 +186,6 @@ class Level:
                     break
             else:
                 self._is_done = True
-                print("lol")
         return 0
             
     
