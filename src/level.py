@@ -29,6 +29,7 @@ class Figure(pygame.sprite.Group):
         super().__init__()
         self.INDEX = index
         self.offsets = offsets
+        self.color = color
         for offset in offsets:
             square = Square(150 * index, 150 * index,
                             offset[1] * BLOCK_SIZE, offset[0] * BLOCK_SIZE,
@@ -137,7 +138,7 @@ class Level:
                     self.current_figure = figure
                     self.current_shadow = Figure(self.current_figure.INDEX, 
                                                  self.current_figure.offsets,
-                                                 tuple([max(0, x - 100) for x in COLORS[self.current_figure.INDEX - 1]]))
+                                                 tuple([max(0, x - 150) for x in self.current_figure.color]))
                     self.current_coords = [(x - square.x) // BLOCK_SIZE,
                                             (y - square.y) // BLOCK_SIZE]
                     for square in self.current_shadow:
