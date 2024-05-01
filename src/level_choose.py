@@ -22,8 +22,9 @@ class levelChoose:
         self.PAGES_LIMIT = math.ceil(self.LEVEL_QUANTITY / (self.BTN_COLS * self.BTN_ROWS))
         self.current_page = 0
         self.current_btn : int | None = None
-        self.back_btn = Button(self.screen, 40, 40, self.BTN_SIZE, self.BTN_SIZE, "<-")
-        self.next_btn = Button(self.screen, WIDTH - 40 - self.BTN_SIZE, 40, self.BTN_SIZE, self.BTN_SIZE, "->")
+        self.back_btn = Button(self.screen, 40, 40, self.BTN_SIZE, self.BTN_SIZE, "", IMG_ARROW_LEFT)
+        self.next_btn = Button(self.screen, WIDTH - 40 - self.BTN_SIZE, 40, self.BTN_SIZE, self.BTN_SIZE, "", IMG_ARROW_RIGHT)
+        self.home_btn = Button(self.screen, WIDTH // 2 - 40, 40, self.BTN_SIZE, self.BTN_SIZE, "", IMG_HOME)
         self.level_btns : list[Button | None] = [None for x in range(self.BTN_COLS * self.BTN_ROWS)]
         self.__create_new_btns()
     
@@ -51,9 +52,11 @@ class levelChoose:
             self.current_btn = -1
         if self.current_page < (self.PAGES_LIMIT - 1) and self.next_btn.draw(pos):
             self.current_btn = -2
+        if self.home_btn.draw(pos):
+            self.current_btn = -3
         print(self.current_btn)
     
-    def click_input(self) -> bool:
+    def click(self) -> bool:
         if self.current_btn is not None and self.current_btn > -1:
             return self.current_page * self.BTN_COLS * self.BTN_ROWS + self.current_btn + 1
         elif self.current_btn == -1:
@@ -62,4 +65,6 @@ class levelChoose:
         elif self.current_btn == -2:
             self.current_page += 1
             self.__create_new_btns()
-        return False
+        elif self.current_btn == -3:
+            return -1
+        return 0

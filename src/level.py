@@ -39,8 +39,9 @@ class Level:
 
     def __init__(self, 
                  screen: pygame.Surface,
-                 index: int) -> None:
-        print(index)
+                 index: int | None,
+                 blocks: tuple[tuple[tuple[int, int]]] | None = None,
+                 size: tuple[int, int] | None = None) -> None:
         self.screen = screen
         self.figures : list[Figure] = []
         self.current_figure = None
@@ -49,19 +50,26 @@ class Level:
         self._is_done = False
         self._last_button = None
         self.index = index
-        self.home_btn = Button(self.screen, 40, 40, 40, 40, "<-")
-        self.next_btn = Button(self.screen, WIDTH - 80, 40, 40, 40, "->")
-        with open(res_path(f"assets/levels/level{index}.txt"), "r") as f:
-            counter = 1
-            for line in f.readlines():
-                if line[0] == "S":
-                    size = line.rstrip().split()
-                    self.RECT_WIDTH = int(size[1])
-                    self.RECT_HEIGHT = int(size[2])
-                else:
-                    block = tuple([tuple([int(y) for y in x.split(":")]) for x in line.rstrip().split(";")])
-                    self.figures.append(Figure(counter, block, COLORS[counter - 1]))
-                    counter += 1
+        self.home_btn = Button(self.screen, 40, 40, 80, 80, "", IMG_HOME)
+        self.next_btn = Button(self.screen, WIDTH - 120, 40, 80, 80, "", IMG_ARROW_RIGHT)
+        if index is None:
+            self.RECT_WIDTH = size[0]
+            self.RECT_HEIGHT = size[1]
+            for i, block in enumerate(blocks):
+                self.figures.append(Figure(i + 1, block, COLORS[i]))
+        else:
+            with open(res_path(f"assets/levels/level{index}.txt"), "r") as f:
+                counter = 1
+                for line in f.readlines():
+                    if line[0] == "S":
+                        size1 = line.rstrip().split()
+                        self.RECT_WIDTH = int(size1[1])
+                        self.RECT_HEIGHT = int(size1[2])
+                    else:
+                        block = tuple([tuple([int(y) for y in x.split(":")]) for x in line.rstrip().split(";")])
+                        print(block)
+                        self.figures.append(Figure(counter, block, COLORS[counter - 1]))
+                        counter += 1
         self.GRID_HEIGHT = HEIGHT // BLOCK_SIZE
         self.GRID_WIDTH = WIDTH // BLOCK_SIZE
         self.matrix = [[0 for x in range(self.GRID_HEIGHT)] for y in range(self.GRID_WIDTH)]
@@ -88,7 +96,7 @@ class Level:
         for block in brick:
             a = row + block[0]
             b = col + block[1]
-            if (a < 0 or a >= self.GRID_WIDTH or
+            if (a < 2 or a >= self.GRID_WIDTH or
                 b < 0 or b >= self.GRID_HEIGHT or
                 self.matrix[a][b] != 0):
                 return False
@@ -180,6 +188,7 @@ class Level:
                     break
             else:
                 self._is_done = True
+                print("lol")
         return 0
             
     

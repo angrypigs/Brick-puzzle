@@ -10,7 +10,7 @@ board = boardGenerator(6, 8)
 max_attempts = -1
 avg = []
 for i in range(100):
-    n = board.generate()
+    n = board.generate()[1]
     avg.append(n)
     if n > max_attempts:
         max_attempts = n

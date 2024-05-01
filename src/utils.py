@@ -40,12 +40,14 @@ class Button:
                  y: int, 
                  width: int, 
                  height: int, 
-                 text: str) -> None:
+                 text: str,
+                 img: pygame.Surface | None = None) -> None:
         self.screen = screen
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 44)
         self._cursor_flag = False
+        self.img = pygame.transform.scale(img, (width, height)) if img is not None else None
 
     def draw(self, cursor_pos) -> bool:
         pygame.draw.rect(self.screen, 
@@ -54,6 +56,8 @@ class Button:
         text_surface = self.font.render(self.text, True, (204, 204, 204))
         text_rect = text_surface.get_rect(center=self.rect.center)
         self.screen.blit(text_surface, text_rect)
+        if self.img is not None:
+            self.screen.blit(self.img, (self.rect))
         if self.rect.collidepoint(cursor_pos):
             self._cursor_flag = True
             return True
@@ -72,6 +76,11 @@ def res_path(rel_path: str) -> str:
     except Exception:
         base_path = sys.path[0]
     return path.normpath(path.join(base_path, rel_path))
+
+IMG_ARROW_LEFT = pygame.image.load("assets/textures/arrow_left.png")
+IMG_ARROW_RIGHT = pygame.image.load("assets/textures/arrow_right.png")
+IMG_HOME = pygame.image.load("assets/textures/menu.png")
+IMG_PLAY = pygame.image.load("assets/textures/play.png")
 
 # BLOCKS = (
 #     ((0, 1), ),
