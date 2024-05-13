@@ -4,7 +4,7 @@ import pygame
 
 HEIGHT = 1000
 WIDTH = 1000
-BLOCK_SIZE = 60
+BLOCK_SIZE = 50
 
 BG_COLOR = (20, 20, 20)
 BTN_COLOR = (40, 40, 40)

@@ -84,7 +84,7 @@ class Level:
         self.bg = pygame.Surface((WIDTH, HEIGHT))
         self.bg.fill(BG_COLOR)
         self.X_OFFSET = (self.GRID_WIDTH - self.RECT_WIDTH) // 2 * BLOCK_SIZE
-        self.Y_OFFSET = (self.GRID_HEIGHT - self.RECT_HEIGHT) // 2 * BLOCK_SIZE
+        self.Y_OFFSET = ((self.GRID_HEIGHT - self.RECT_HEIGHT) // 2 + 1) * BLOCK_SIZE
         pygame.draw.rect(self.bg, BTN_COLOR,
                          (self.X_OFFSET, self.Y_OFFSET,
                           self.RECT_WIDTH * BLOCK_SIZE,
@@ -95,7 +95,7 @@ class Level:
         for block in brick:
             a = row + block[0]
             b = col + block[1]
-            if (a < 2 or a >= self.GRID_WIDTH or
+            if (a < 3 or a >= self.GRID_WIDTH or
                 b < 0 or b >= self.GRID_HEIGHT or
                 self.matrix[a][b] != 0):
                 return False
