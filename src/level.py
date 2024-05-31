@@ -48,7 +48,7 @@ class Level:
         self.current_figure = None
         self.current_shadow = None
         self.current_coords = [0, 0]
-        self._is_done = False
+        self.is_done = False
         self._last_button = None
         self.index = index
         self.home_btn = Button(self.screen, 40, 40, 80, 80, "", IMG_HOME)
@@ -122,7 +122,7 @@ class Level:
         self._last_button = None
         if self.home_btn.draw(pos):
             self._last_button = -1
-        if self._is_done and self.next_btn.draw(pos):
+        if self.is_done and self.next_btn.draw(pos):
             self._last_button = -2
         for figure in self.figures:
             figure.draw(self.screen)
@@ -186,7 +186,7 @@ class Level:
                 if 0 in self.matrix[i][self.X_OFFSET // BLOCK_SIZE : self.X_OFFSET // BLOCK_SIZE + self.RECT_WIDTH]:
                     break
             else:
-                self._is_done = True
+                self.is_done = True
         return 0
             
     

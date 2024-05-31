@@ -41,17 +41,20 @@ class Button:
                  width: int, 
                  height: int, 
                  text: str,
-                 img: pygame.Surface | None = None) -> None:
+                 img: pygame.Surface | None = None,
+                 color: tuple[int, int, int] | None = None) -> None:
         self.screen = screen
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.font = pygame.font.Font(None, 44)
         self._cursor_flag = False
         self.img = pygame.transform.scale(img, (width, height)) if img is not None else None
+        self.color = BTN_COLOR if color is None else color
+        self.color_active = BTN_COLOR_ACTIVE if color is None else tuple([x + 40 for x in color])
 
     def draw(self, cursor_pos) -> bool:
         pygame.draw.rect(self.screen, 
-                         BTN_COLOR_ACTIVE if self._cursor_flag else BTN_COLOR, 
+                         self.color_active if self._cursor_flag else self.color, 
                          self.rect, border_radius=10)
         text_surface = self.font.render(self.text, True, (204, 204, 204))
         text_rect = text_surface.get_rect(center=self.rect.center)
@@ -76,6 +79,17 @@ def res_path(rel_path: str) -> str:
     except Exception:
         base_path = sys.path[0]
     return path.normpath(path.join(base_path, rel_path))
+
+def divide_list(l: list[int], n: int, q: int):
+    """
+    Split list of integers into q sublists with elements in ranges [0, n), [n, 2n) etc.
+    """
+    res = [[] for _ in range(q)]
+    for e in l:
+        index = e // n
+        if index < q:
+            res[index].append(e)
+    return res
 
 IMG_ARROW_LEFT = pygame.image.load("assets/textures/arrow_left.png")
 IMG_ARROW_RIGHT = pygame.image.load("assets/textures/arrow_right.png")

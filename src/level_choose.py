@@ -8,18 +8,21 @@ from src.utils import *
 class levelChoose:
 
     def __init__(self,
-                 screen: pygame.Surface) -> None:
+                 screen: pygame.Surface,
+                 levels_done: list[int]) -> None:
         self.screen = screen
         levels = sorted(os.listdir(res_path("assets/levels")), key = lambda x: int(re.findall(r'\d+', x)[0]))
         self.LEVEL_QUANTITY = len(levels)
-        self.BTN_ROWS = 4
-        self.BTN_COLS = 4
+        self.BTN_ROWS = 6
+        self.BTN_COLS = 6
         self.BTN_SIZE = 80
         self.X_OFFSET = 40
         self.Y_OFFSET = 120
         self.X_DELAY = (WIDTH - 2 * self.X_OFFSET - self.BTN_ROWS * self.BTN_SIZE) / (self.BTN_ROWS + 1)
         self.Y_DELAY = (HEIGHT - self.Y_OFFSET - self.BTN_COLS * self.BTN_SIZE) / (self.BTN_COLS + 1)
         self.PAGES_LIMIT = math.ceil(self.LEVEL_QUANTITY / (self.BTN_COLS * self.BTN_ROWS))
+        self.levels_done = divide_list(levels_done, self.BTN_COLS * self.BTN_ROWS, self.PAGES_LIMIT)
+        print(self.levels_done)
         self.current_page = 0
         self.current_btn : int | None = None
         self.back_btn = Button(self.screen, 40, 40, self.BTN_SIZE, self.BTN_SIZE, "", IMG_ARROW_LEFT)
@@ -36,7 +39,8 @@ class levelChoose:
                     self.level_btns[i * self.BTN_COLS + j] = Button(self.screen, 
                     self.X_OFFSET + self.X_DELAY * (j + 1) + self.BTN_SIZE * j,
                     self.Y_OFFSET + self.Y_DELAY * (i + 1) + self.BTN_SIZE * i,
-                    self.BTN_SIZE, self.BTN_SIZE, str(index + 1))
+                    self.BTN_SIZE, self.BTN_SIZE, str(index + 1),
+                    color = (25, 79, 33) if (index + 1) in self.levels_done[self.current_page] else None)
                 else:
                     self.level_btns[i * self.BTN_COLS + j] = None
     

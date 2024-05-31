@@ -24,6 +24,12 @@ class Game:
         self.generate_size = ()
         self.generate_bricks = ()
         self.pos = (0, 0)
+        self.beaten_levels: list[int] = []
+        with open(res_path("assets/save.txt"), "r") as f:
+            lines = f.readlines()
+            if lines:
+                for lvl in lines[0].rstrip(";").split(";"):
+                    self.beaten_levels.append(int(lvl, 8))
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -35,7 +41,7 @@ class Game:
                             pressed_button = self.menu.click()
                             if pressed_button == 1:
                                 self.game_mode = 1
-                                self.menu = levelChoose(self.screen)
+                                self.menu = levelChoose(self.screen, self.beaten_levels)
                             elif pressed_button == 2:
                                 self.game_mode = 3
                                 self.generate_status = False
@@ -66,13 +72,21 @@ class Game:
                                         self.generate_status = False
                                     else:
                                         self.game_mode = 1
-                                        self.menu = levelChoose(self.screen)
+                                        if self.lvl.is_done and self.lvl.index not in self.beaten_levels:
+                                            self.beaten_levels.append(self.lvl.index)
+                                            with open(res_path("assets/save.txt"), "a") as f:
+                                                f.write(str(oct(self.lvl.index)).lstrip("0o") + ";")
+                                        self.menu = levelChoose(self.screen, self.beaten_levels)
                                 case 2:
                                     if self.lvl.index is not None:
                                         if self.lvl.index < self.menu.LEVEL_QUANTITY:
                                             self.lvl = Level(self.screen, self.lvl.index + 1)
                                         else:
                                             self.game_mode = 1
+                                        if self.lvl.index not in self.beaten_levels:
+                                            self.beaten_levels.append(self.lvl.index)
+                                            with open(res_path("assets/save.txt"), "a") as f:
+                                                f.write(str(oct(self.lvl.index - 1)).lstrip("0o") + ";")
                                     else:
                                         self.game_mode = 3
                                         self.generate_status = False

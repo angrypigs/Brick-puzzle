@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.board_generator import boardGenerator
 from src.utils import *
 
-for i in range(100):
+for i in range(5000):
     n = random.randint(5, 9)
     m = random.randint(-n + 13, -n + 15)
     board = boardGenerator(n, m)
