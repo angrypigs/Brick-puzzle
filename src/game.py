@@ -87,6 +87,8 @@ class Game:
                                             self.beaten_levels.append(self.lvl.index)
                                             with open(res_path("assets/save.txt"), "a") as f:
                                                 f.write(str(oct(self.lvl.index - 1)).lstrip("0o") + ";")
+                                        if self.lvl.index < self.menu.LEVEL_QUANTITY:
+                                            self.menu.levels_done = self.beaten_levels.copy()
                                     else:
                                         self.game_mode = 3
                                         self.generate_status = False
