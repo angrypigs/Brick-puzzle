@@ -2,6 +2,7 @@ import pygame
 import sys
 from threading import Thread
 import random
+import sqlite3
 
 from src.level import Level
 from src.utils import *
@@ -17,7 +18,6 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Brick Puzzle")
         self.clock = pygame.time.Clock()
-        self.lvl = Level(self.screen, 1)
         self.menu = mainMenu(self.screen)
         self.game_mode = 0
         self.generate_status = False
@@ -25,6 +25,15 @@ class Game:
         self.generate_bricks = ()
         self.pos = (0, 0)
         self.beaten_levels: list[int] = []
+        self.levels = []
+
+        conn = sqlite3.connect(res_path("assets/levels.db"))
+        c = conn.cursor()
+        c.execute("""SELECT * FROM lvl""")
+        for i in c.fetchall():
+            self.levels.append(((i[1], i[2]), ) + (tuple(tuple(tuple(map(int, x.split(':'))) for x in y.split(';')) for y in i[3].split('_')), ))
+        self.lvl = Level(self.screen, 1, self.levels[1][1], self.levels[1][0])
+
         with open(res_path("assets/save.txt"), "r") as f:
             lines = f.readlines()
             if lines:
@@ -41,7 +50,7 @@ class Game:
                             pressed_button = self.menu.click()
                             if pressed_button == 1:
                                 self.game_mode = 1
-                                self.menu = levelChoose(self.screen, self.beaten_levels)
+                                self.menu = levelChoose(self.screen, self.beaten_levels, len(self.levels))
                             elif pressed_button == 2:
                                 self.game_mode = 3
                                 self.generate_status = False
@@ -51,11 +60,11 @@ class Game:
                             self.pos = event.pos
                     case 1:
                         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                            is_lvl_clicked = self.menu.click()
-                            if is_lvl_clicked > 0:
+                            res = self.menu.click()
+                            if res > 0:
                                 self.game_mode = 2
-                                self.lvl = Level(self.screen, is_lvl_clicked)
-                            elif is_lvl_clicked == -1:
+                                self.lvl = Level(self.screen, res - 1, self.levels[res - 1][1], self.levels[res - 1][0])
+                            elif res == -1:
                                 self.game_mode = 0
                                 self.menu = mainMenu(self.screen)
                         elif event.type == pygame.MOUSEMOTION:
@@ -76,17 +85,20 @@ class Game:
                                             self.beaten_levels.append(self.lvl.index)
                                             with open(res_path("assets/save.txt"), "a") as f:
                                                 f.write(str(oct(self.lvl.index)).lstrip("0o") + ";")
-                                        self.menu = levelChoose(self.screen, self.beaten_levels)
+                                        self.menu = levelChoose(self.screen, self.beaten_levels, len(self.levels))
                                 case 2:
                                     if self.lvl.index is not None:
                                         if self.lvl.index < self.menu.LEVEL_QUANTITY:
-                                            self.lvl = Level(self.screen, self.lvl.index + 1)
+                                            self.lvl = Level(self.screen, 
+                                                             self.lvl.index + 1, 
+                                                             self.levels[self.lvl.index + 1][1], 
+                                                             self.levels[self.lvl.index + 1][0])
                                         else:
                                             self.game_mode = 1
                                         if self.lvl.index not in self.beaten_levels:
                                             self.beaten_levels.append(self.lvl.index)
                                             with open(res_path("assets/save.txt"), "a") as f:
-                                                f.write(str(oct(self.lvl.index - 1)).lstrip("0o") + ";")
+                                                f.write(str(oct(self.lvl.index)).lstrip("0o") + ";")
                                         if self.lvl.index < self.menu.LEVEL_QUANTITY:
                                             self.menu.levels_done = self.beaten_levels.copy()
                                     else:
@@ -102,9 +114,10 @@ class Game:
                 self.menu.draw(self.pos)
                 if self.generate_status:
                     self.game_mode = 2
-                    self.lvl = Level(self.screen, None, 
-                                        self.generate_bricks, 
-                                        self.generate_size)
+                    self.lvl = Level(self.screen, 
+                                    None, 
+                                    self.generate_bricks, 
+                                    self.generate_size)
             else:
                 self.lvl.draw(self.pos)
             pygame.display.flip()

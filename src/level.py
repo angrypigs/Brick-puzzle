@@ -40,9 +40,9 @@ class Level:
 
     def __init__(self, 
                  screen: pygame.Surface,
-                 index: int | None,
-                 blocks: tuple[tuple[tuple[int, int]]] | None = None,
-                 size: tuple[int, int] | None = None) -> None:
+                 index: None | int,
+                 blocks: tuple[tuple[tuple[int, int]]],
+                 size: tuple[int, int]) -> None:
         self.screen = screen
         self.figures : list[Figure] = []
         self.current_figure = None
@@ -53,20 +53,9 @@ class Level:
         self.index = index
         self.home_btn = Button(self.screen, 40, 40, 80, 80, "", IMG_HOME)
         self.next_btn = Button(self.screen, WIDTH - 120, 40, 80, 80, "", IMG_ARROW_RIGHT)
-        blocks_temp = []
-        if index is None:
-            self.RECT_WIDTH = size[0]
-            self.RECT_HEIGHT = size[1]
-            blocks_temp = blocks
-        else:
-            with open(res_path(f"assets/levels/level{index}.txt"), "r") as f:
-                for line in f.readlines():
-                    if line[0] == "S":
-                        size1 = line.rstrip().split()
-                        self.RECT_WIDTH = int(size1[1])
-                        self.RECT_HEIGHT = int(size1[2])
-                    else:
-                        blocks_temp.append(tuple([tuple([int(y) for y in x.split(":")]) for x in line.rstrip().split(";")]))
+        self.RECT_WIDTH = size[0]
+        self.RECT_HEIGHT = size[1]
+        blocks_temp = blocks
         for i, color in enumerate(random.sample(COLORS, len(blocks_temp))):
             self.figures.append(Figure(i + 1, blocks_temp[i], color))
         self.GRID_HEIGHT = HEIGHT // BLOCK_SIZE
@@ -108,12 +97,12 @@ class Level:
 
     def __remove(self, brick: tuple[tuple[int, int]],
                    row: int, col: int) -> None:
-        counter = 0
+        # counter = 0
         for block in brick:
-            if self.matrix[row + block[0]][col + block[1]] != 0:
-                counter += 1
+            # if self.matrix[row + block[0]][col + block[1]] != 0:
+            #     counter += 1
             self.matrix[row + block[0]][col + block[1]] = 0
-        print(counter)
+        # print(counter)
 
     def draw(self, pos) -> None:
         self.screen.blit(self.bg, (0, 0))
