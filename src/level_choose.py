@@ -31,6 +31,7 @@ class levelChoose:
         self.__create_new_btns()
     
     def __create_new_btns(self) -> None:
+        print(self.levels_done)
         for i in range(self.BTN_ROWS):
             for j in range(self.BTN_COLS):
                 index = self.current_page * self.BTN_COLS * self.BTN_ROWS + i * self.BTN_COLS + j
@@ -39,10 +40,14 @@ class levelChoose:
                     self.X_OFFSET + self.X_DELAY * (j + 1) + self.BTN_SIZE * j,
                     self.Y_OFFSET + self.Y_DELAY * (i + 1) + self.BTN_SIZE * i,
                     self.BTN_SIZE, self.BTN_SIZE, str(index + 1),
-                    color = (25, 79, 33) if (index + 1) in self.levels_done[self.current_page] else None)
+                    color = (25, 79, 33) if (index) in self.levels_done[self.current_page] else None)
                 else:
                     self.level_btns[i * self.BTN_COLS + j] = None
     
+    def update_beaten_levels(self, levels: list[int]) -> None:
+        self.levels_done = divide_list(levels.copy(), self.BTN_COLS * self.BTN_ROWS, self.PAGES_LIMIT)
+        self.__create_new_btns()
+
     def draw(self, pos) -> None:
         self.screen.fill(BG_COLOR)
         self.current_btn = None
@@ -60,7 +65,7 @@ class levelChoose:
     
     def click(self) -> bool:
         if self.current_btn is not None and self.current_btn > -1:
-            return self.current_page * self.BTN_COLS * self.BTN_ROWS + self.current_btn + 1
+            return self.current_page * self.BTN_COLS * self.BTN_ROWS + self.current_btn
         elif self.current_btn == -1:
             self.current_page -= 1
             self.__create_new_btns()

@@ -97,12 +97,8 @@ class Level:
 
     def __remove(self, brick: tuple[tuple[int, int]],
                    row: int, col: int) -> None:
-        # counter = 0
         for block in brick:
-            # if self.matrix[row + block[0]][col + block[1]] != 0:
-            #     counter += 1
             self.matrix[row + block[0]][col + block[1]] = 0
-        # print(counter)
 
     def draw(self, pos) -> None:
         self.screen.blit(self.bg, (0, 0))
@@ -157,6 +153,10 @@ class Level:
                                                                 self.current_coords[1] * BLOCK_SIZE + square.y + BLOCK_SIZE // 2))
 
     def release(self, x: int, y: int) -> int:
+        """
+        - 1 -> back btn
+        - 2 -> next btn
+        """
         if self._last_button == -2:
             return 2
         elif self._last_button == -1:
