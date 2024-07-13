@@ -62,7 +62,7 @@ class Game:
                     case 1:
                         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                             res = self.menu.click()
-                            if res > 0:
+                            if res >= 0:
                                 self.game_mode = 2
                                 self.lvl = Level(self.screen, res, self.levels[res][1], self.levels[res][0])
                             elif res == -1: # back button
@@ -83,16 +83,17 @@ class Game:
                                     else: # if level is from list
                                         self.game_mode = 1
                                         if self.lvl.is_done and self.lvl.index not in self.beaten_levels:
+                                            print(self.lvl.index)
                                             self.beaten_levels.append(self.lvl.index)
                                             with open(res_path("assets/save.txt"), "a") as f:
-                                                f.write(str(oct(self.lvl.index)).lstrip("0o") + ";")
+                                                f.write(str(oct(self.lvl.index))[2:] + ";")
                                         self.menu.update_beaten_levels(self.beaten_levels)
                                 case 2: # next button
                                     if self.lvl.index is not None: # if level wasn't generated
                                         if self.lvl.index not in self.beaten_levels:
                                             self.beaten_levels.append(self.lvl.index)
                                             with open(res_path("assets/save.txt"), "a") as f:
-                                                f.write(str(oct(self.lvl.index)).lstrip("0o") + ";")
+                                                f.write(str(oct(self.lvl.index))[2:] + ";")
                                         if self.lvl.index < self.menu.LEVEL_QUANTITY - 1: # if button isn't the last one
                                             self.lvl = Level(self.screen, 
                                                              self.lvl.index + 1, 

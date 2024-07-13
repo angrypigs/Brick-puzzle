@@ -74,4 +74,4 @@ class levelChoose:
             self.__create_new_btns()
         elif self.current_btn == -3:
             return -1
-        return 0
+        return -2
