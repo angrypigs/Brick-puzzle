@@ -113,7 +113,6 @@ class Level:
             figure.draw(self.screen)
         
     def click(self, x: int, y: int) -> None:
-        print(x, y)
         flag = False
         for figure in self.figures:
             if flag:
@@ -123,7 +122,7 @@ class Level:
                     self.current_figure = figure
                     self.current_shadow = Figure(self.current_figure.INDEX, 
                                                  self.current_figure.offsets,
-                                                 tuple([max(0, x - 150) for x in self.current_figure.color]))
+                                                 tuple([x * 2 // 9 for x in self.current_figure.color]))
                     self.current_coords = [(x - square.x) // BLOCK_SIZE,
                                             (y - square.y) // BLOCK_SIZE]
                     for square in self.current_shadow:

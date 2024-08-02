@@ -81,7 +81,7 @@ class boardGenerator:
                     if self.matrix[i][j] == 0:
                         for block in all_blocks:
                             weight = self.get_weight(block[1], i, j)
-                            if fill_counter < 3:
+                            if fill_counter < 2:
                                 if weight >= 0:
                                     best_placements.append((block, i, j))
                                     max_weight = weight
@@ -95,8 +95,6 @@ class boardGenerator:
             if max_weight == -1:
                 if self.is_board_full():
                     print(f"Attempts: {tries}")
-                    for i in self.matrix:
-                        print(i)
                     return (placed_blocks, tries, )
                 else:
                     tries += 1

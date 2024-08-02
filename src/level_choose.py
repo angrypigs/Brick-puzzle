@@ -31,7 +31,6 @@ class levelChoose:
         self.__create_new_btns()
     
     def __create_new_btns(self) -> None:
-        print(self.levels_done)
         for i in range(self.BTN_ROWS):
             for j in range(self.BTN_COLS):
                 index = self.current_page * self.BTN_COLS * self.BTN_ROWS + i * self.BTN_COLS + j

@@ -31,8 +31,7 @@ class Game:
         c = conn.cursor()
         c.execute("""SELECT * FROM lvl""")
         for i in c.fetchall():
-            if len(self.levels) < 40:
-                self.levels.append(((i[1], i[2]), ) + (tuple(tuple(tuple(map(int, x.split(':'))) for x in y.split(';')) for y in i[3].split('_')), ))
+            self.levels.append(((i[1], i[2]), ) + (tuple(tuple(tuple(map(int, x.split(':'))) for x in y.split(';')) for y in i[3].split('_')), ))
         self.lvl = Level(self.screen, 1, self.levels[1][1], self.levels[1][0])
 
         with open(res_path("assets/save.txt"), "r") as f:
@@ -83,7 +82,6 @@ class Game:
                                     else: # if level is from list
                                         self.game_mode = 1
                                         if self.lvl.is_done and self.lvl.index not in self.beaten_levels:
-                                            print(self.lvl.index)
                                             self.beaten_levels.append(self.lvl.index)
                                             with open(res_path("assets/save.txt"), "a") as f:
                                                 f.write(str(oct(self.lvl.index))[2:] + ";")
