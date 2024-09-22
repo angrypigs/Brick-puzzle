@@ -56,8 +56,6 @@ class Game:
                                 self.generate_status = False
                                 Thread(target=self.generate_level, daemon=True).start()
                                 self.menu = loadingScreen(self.screen)
-                        elif event.type == pygame.MOUSEMOTION:
-                            self.pos = event.pos
                     case 1:
                         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                             res = self.menu.click()
@@ -67,8 +65,6 @@ class Game:
                             elif res == -1: # back button
                                 self.game_mode = 0
                                 self.menu = mainMenu(self.screen)
-                        elif event.type == pygame.MOUSEMOTION:
-                            self.pos = event.pos
                     case 2:
                         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                             self.lvl.click(event.pos[0], event.pos[1])
@@ -108,8 +104,8 @@ class Game:
 
                         elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
                             self.lvl.move(event.pos[0], event.pos[1])
-                        elif event.type == pygame.MOUSEMOTION:
-                            self.pos = event.pos        
+                if event.type == pygame.MOUSEMOTION:
+                    self.pos = event.pos
             if self.game_mode in (0, 1, 3):
                 self.menu.draw(self.pos)
                 if self.generate_status:
