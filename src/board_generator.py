@@ -71,6 +71,7 @@ class boardGenerator:
         placed_blocks = []
         all_blocks = random.sample(BRICKS, len(BRICKS) // 2)
         fill_counter = 0
+        LIMIT = self.WIDTH * self.HEIGHT // 40
         tries = 0
         while True:
             fill_counter += 1
@@ -81,7 +82,7 @@ class boardGenerator:
                     if self.matrix[i][j] == 0:
                         for block in all_blocks:
                             weight = self.get_weight(block[1], i, j)
-                            if fill_counter < 2:
+                            if fill_counter <= LIMIT:
                                 if weight >= 0:
                                     best_placements.append((block, i, j))
                                     max_weight = weight
